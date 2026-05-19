@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Karol Goszczyński – Strony Internetowe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #04060f;
+      --surface: #080d1a;
+      --surface2: #0d1526;
+      --accent: #00e5ff;
+      --accent2: #7b61ff;
+      --accent3: #00ff99;
+      --text: #e8edf8;
+      --muted: #5a6a8a;
+      --border: rgba(0,229,255,0.12);
+      --glow: 0 0 40px rgba(0,229,255,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.2s, height 0.2s, background 0.2s;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(0,229,255,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease, width 0.3s, height 0.3s, opacity 0.3s;
+    }
+
+    /* Grid bg */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Noise overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 4rem;
+      background: linear-gradient(to bottom, rgba(4,6,15,0.95) 0%, transparent 100%);
+      backdrop-filter: blur(4px);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 0;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+    .hero-orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,229,255,0.12) 0%, transparent 70%);
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      animation: float1 8s ease-in-out infinite;
+    }
+    .hero-orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(123,97,255,0.15) 0%, transparent 70%);
+      bottom: 50px; right: -100px;
+      animation: float2 10s ease-in-out infinite;
+    }
+    .hero-orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,255,153,0.08) 0%, transparent 70%);
+      bottom: 100px; left: -50px;
+      animation: float1 12s ease-in-out infinite reverse;
+    }
+
+    @keyframes float1 {
+      0%,100% { transform: translateX(-50%) translateY(0px); }
+      50% { transform: translateX(-50%) translateY(-30px); }
+    }
+    @keyframes float2 {
+      0%,100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .hero-tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--border);
+      padding: 0.4rem 1.2rem;
+      border-radius: 100px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.8s ease both;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: rgba(0,229,255,0.04);
+    }
+    .hero-tag .dot {
+      width: 6px; height: 6px;
+      background: var(--accent3);
+      border-radius: 50%;
+      animation: blink 1.5s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.2} }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      animation: fadeUp 0.8s 0.2s ease both;
+      margin-bottom: 0.3em;
+    }
+    h1 .line2 {
+      display: block;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 60%, var(--accent3) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.8;
+      animation: fadeUp 0.8s 0.4s ease both;
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    .hero-cta {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp 0.8s 0.6s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      padding: 0.9rem 2.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      border: none;
+      cursor: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 30px rgba(0,229,255,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(0,229,255,0.55);
+    }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: transparent;
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      padding: 0.9rem 2.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      cursor: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      animation: fadeUp 1s 1s ease both;
+    }
+    .scroll-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* SECTIONS */
+    section {
+      position: relative; z-index: 2;
+      padding: 7rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::before {
+      content: '';
+      width: 40px; height: 1px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* WHAT I OFFER */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5px;
+      margin-top: 4rem;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--border);
+    }
+    .feature-card {
+      background: var(--surface);
+      padding: 2.5rem;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,229,255,0.04) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .feature-card:hover { background: var(--surface2); }
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+    .feature-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+      color: var(--text);
+    }
+    .feature-card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.8;
+      font-weight: 300;
+    }
+    .feature-num {
+      position: absolute;
+      top: 1.5rem; right: 2rem;
+      font-size: 0.65rem;
+      color: var(--border);
+      letter-spacing: 0.15em;
+    }
+
+    /* PRICE */
+    .price-section {
+      text-align: center;
+    }
+    .price-card {
+      display: inline-block;
+      max-width: 540px;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3.5rem 3rem;
+      position: relative;
+      overflow: hidden;
+      margin-top: 3rem;
+    }
+    .price-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent2), var(--accent), var(--accent3));
+    }
+    .price-glow {
+      position: absolute;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%);
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .price-amount {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 5rem;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .price-currency { font-size: 2rem; vertical-align: top; margin-top: 0.8rem; display: inline-block; }
+    .price-period {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-top: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .price-includes {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 2.5rem;
+    }
+    .price-includes li {
+      font-size: 0.82rem;
+      color: var(--muted);
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 0.8rem;
+      font-weight: 300;
+    }
+    .price-includes li:last-child { border-bottom: none; }
+    .price-includes .check { color: var(--accent3); font-size: 1rem; }
+    .price-includes .x-mark { color: var(--muted); font-size: 0.9rem; opacity: 0.5; }
+    .price-note {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 1.5rem;
+      opacity: 0.7;
+      font-weight: 300;
+    }
+
+    /* PROCESS */
+    .process-steps {
+      display: flex; flex-direction: column; gap: 0;
+      margin-top: 4rem;
+    }
+    .step {
+      display: flex; gap: 3rem; align-items: flex-start;
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      transition: padding-left 0.3s;
+    }
+    .step:last-child { border-bottom: none; }
+    .step:hover { padding-left: 1rem; }
+    .step-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 3.5rem;
+      color: var(--border);
+      min-width: 80px;
+      line-height: 1;
+      transition: color 0.3s;
+    }
+    .step:hover .step-num { color: var(--accent); }
+    .step-content h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 0.6rem;
+    }
+    .step-content p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.8;
+      font-weight: 300;
+      max-width: 500px;
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .about-visual {
+      position: relative;
+      height: 380px;
+    }
+    .about-card {
+      position: absolute;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .about-card-main {
+      width: 260px; left: 0; top: 20px;
+      border-color: rgba(0,229,255,0.2);
+    }
+    .about-card-stat {
+      width: 180px; right: 0; top: 80px;
+      text-align: center;
+    }
+    .about-card-tag {
+      width: 220px; left: 30px; bottom: 30px;
+    }
+    .about-avatar {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      border-radius: 50%;
+      margin-bottom: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--bg);
+    }
+    .about-card h4 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    .about-card .role {
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .stat-big {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 2.5rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      font-weight: 300;
+    }
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tech-tag {
+      font-size: 0.65rem;
+      padding: 0.3rem 0.8rem;
+      background: rgba(0,229,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .about-text p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.9;
+      margin-bottom: 1.2rem;
+      font-weight: 300;
+    }
+    .about-text strong { color: var(--text); font-weight: 500; }
+
+    /* CONTACT */
+    .contact-section { text-align: center; }
+    .contact-inner {
+      margin-top: 3rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center top, rgba(123,97,255,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .contact-email {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1rem, 3.5vw, 2.5rem);
+      color: var(--text);
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      margin-bottom: 2rem;
+      transition: color 0.3s;
+      word-break: break-all;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .contact-email:hover { color: var(--accent); }
+    .contact-email .arrow { transition: transform 0.3s; }
+    .contact-email:hover .arrow { transform: translateX(5px); }
+    .contact-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      max-width: 400px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--border);
+      padding: 2rem 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .footer-copy {
+      font-size: 0.7rem;
+      color: var(--muted);
+      opacity: 0.5;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Typing animation in hero */
+    .typed-text::after {
+      content: '|';
+      animation: blink 1s infinite;
+      color: var(--accent);
+    }
+
+    /* Scanline effect */
+    .scanline {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.3), transparent);
+      animation: scan 5s linear infinite;
+      pointer-events: none;
+      z-index: 50;
+    }
+    @keyframes scan {
+      0% { top: -2px; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: 100vh; opacity: 0; }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-visual { display: none; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+      .contact-inner { padding: 2.5rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="scanline"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">KG<span>.</span>dev</div>
+  <ul class="nav-links">
+    <li><a href="#oferta">Oferta</a></li>
+    <li><a href="#cena">Cena</a></li>
+    <li><a href="#proces">Proces</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+
+  <div class="hero-tag">
+    <span class="dot"></span>
+    Przyjmuję nowe zlecenia
+  </div>
+
+  <h1>
+    Twoja strona,<br>
+    <span class="line2">gotowa w tydzień.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Tworzę nowoczesne, szybkie strony wizytówkowe dla firm i freelancerów. Bez zbędnych funkcji — tylko to, czego naprawdę potrzebujesz.
+  </p>
+
+  <div class="hero-cta">
+    <a href="#kontakt" class="btn-primary">
+      Zamów stronę
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#cena" class="btn-outline">
+      Zobacz cennik
+    </a>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</div>
+
+<!-- OFERTA -->
+<section id="oferta">
+  <p class="section-label reveal">Co oferuję</p>
+  <h2 class="section-title reveal">Prosta strona,<br>profesjonalny wizerunek.</h2>
+
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <span class="feature-num">01</span>
+      <span class="feature-icon">⚡</span>
+      <h3>Strona wizytówkowa</h3>
+      <p>Elegancka, szybka strona prezentująca Twoją firmę, usługi i dane kontaktowe. Idealna dla małych firm i freelancerów.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">02</span>
+      <span class="feature-icon">📱</span>
+      <h3>Responsywny design</h3>
+      <p>Strona wygląda i działa perfekcyjnie na każdym urządzeniu — smartfonie, tablecie i komputerze.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">03</span>
+      <span class="feature-icon">🔍</span>
+      <h3>Podstawowe SEO</h3>
+      <p>Strona zoptymalizowana pod wyszukiwarki, żebyś był widoczny tam, gdzie szukają Cię klienci.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">04</span>
+      <span class="feature-icon">🌐</span>
+      <h3>Domena + hosting</h3>
+      <p>Pomogę wybrać i uruchomić domenę oraz hosting. Całość działa — nie musisz martwić się o technikalia.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">05</span>
+      <span class="feature-icon">✏️</span>
+      <h3>Treść i grafika</h3>
+      <p>Pomogę z tekstami i doborem grafik, żeby strona nie tylko działała — ale też przyciągała uwagę.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-num">06</span>
+      <span class="feature-icon">🛡️</span>
+      <h3>Bez ukrytych kosztów</h3>
+      <p>Stała cena, jasne zasady. Wiesz dokładnie, za co płacisz, zanim cokolwiek podpiszesz.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CENA -->
+<section id="cena" style="padding-top: 2rem;">
+  <div class="price-section">
+    <p class="section-label reveal" style="justify-content: center; margin-left: auto;">Cennik</p>
+    <h2 class="section-title reveal">Jedna prosta cena.</h2>
+    <p class="reveal" style="color: var(--muted); font-size: 0.85rem; font-weight:300; line-height:1.8; max-width:460px; margin: 0 auto;">Żadnych ukrytych opłat, abonamentów za „utrzymanie" czy pakietów premium. Płacisz raz i masz stronę.</p>
+
+    <div class="price-card reveal">
+      <div class="price-glow"></div>
+      <div style="font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); margin-bottom:1.5rem;">Pakiet Standard</div>
+      <div>
+        <span class="price-currency">zł</span><span class="price-amount">499</span>
+      </div>
+      <div class="price-period">jednorazowo za wykonanie strony</div>
+      <ul class="price-includes">
+        <li><span class="check">✓</span> Projekt + wykonanie strony wizytówkowej</li>
+        <li><span class="check">✓</span> Responsywność (mobile, tablet, desktop)</li>
+        <li><span class="check">✓</span> Podstawowe SEO</li>
+        <li><span class="check">✓</span> Formularz kontaktowy</li>
+        <li><span class="check">✓</span> Drobne poprawki po odbiorze</li>
+        <li><span class="x-mark">+</span> Domena – <strong style="color:var(--text)">dodatkowy koszt roczny</strong> (ok. 50–100 zł/rok w zależności od rozszerzenia)</li>
+        <li><span class="x-mark">✗</span> Panel logowania / sklep / złożone systemy</li>
+      </ul>
+      <a href="#kontakt" class="btn-primary" style="width:100%; justify-content:center;">
+        Chcę taką stronę
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <p class="price-note">* Cena dotyczy prostych stron wizytówkowych. Wycena indywidualna dla bardziej rozbudowanych projektów.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCES -->
+<section id="proces">
+  <p class="section-label reveal">Jak to działa</p>
+  <h2 class="section-title reveal">Od rozmowy<br>do gotowej strony.</h2>
+
+  <div class="process-steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3>Kontakt i brief</h3>
+        <p>Piszesz do mnie, opisujesz czym zajmuje się Twoja firma i czego oczekujesz. Im więcej szczegółów, tym lepszy efekt. Żadnych zobowiązań na tym etapie.</p>
+      </div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3>Projekt i wycena</h3>
+        <p>Przygotowuję propozycję wyglądu strony i potwierdzam cenę. Razem ustalamy szczegóły — kolory, treść, zdjęcia.</p>
+      </div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3>Realizacja</h3>
+        <p>Buduję stronę. W trakcie możesz śledzić postęp i zgłaszać uwagi. Zazwyczaj zajmuje to od kilku dni do tygodnia.</p>
+      </div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h3>Odbiór i publikacja</h3>
+        <p>Akceptujesz gotową stronę, konfiguruję domenę i hosting. Twoja strona jest online — gotowa na klientów.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section>
+  <div class="about-grid">
+    <div class="about-visual">
+      <div class="about-card about-card-main">
+        <div class="about-avatar">KG</div>
+        <h4>Karol Goszczyński</h4>
+        <div class="role">Web Developer</div>
+      </div>
+      <div class="about-card about-card-stat">
+        <div class="stat-big">100%</div>
+        <div class="stat-label">projektów oddanych<br>na czas</div>
+      </div>
+      <div class="about-card about-card-tag">
+        <div class="tech-tags">
+          <span class="tech-tag">HTML</span>
+          <span class="tech-tag">CSS</span>
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">React</span>
+          <span class="tech-tag">WordPress</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-text reveal">
+      <p class="section-label" style="margin-bottom:1rem;">O mnie</p>
+      <h2 class="section-title" style="font-size: 2.2rem; margin-bottom:1.5rem;">Cześć, jestem<br>Karol.</h2>
+      <p>Tworzę strony internetowe dla osób, które chcą <strong>zaistnieć w sieci</strong> bez przepłacania i bez bólu głowy. Specjalizuję się w prostych, szybkich i estetycznych stronach wizytówkowych.</p>
+      <p>Nie oferuję sklepów internetowych, paneli logowania ani złożonych systemów — dzięki temu mogę skupić się na tym, co robię najlepiej i dostarczyć produkt <strong>najwyższej jakości</strong> w rozsądnej cenie.</p>
+      <p>Każda strona to indywidualny projekt — nie korzystam z szablonów, które wyglądają tak samo dla wszystkich.</p>
+    </div>
+  </div>
+</section>
+
+<!-- KONTAKT -->
+<section id="kontakt">
+  <div class="contact-section">
+    <p class="section-label reveal" style="justify-content: center; margin-left: auto;">Kontakt</p>
+    <h2 class="section-title reveal">Gotowy na swoją<br>nową stronę?</h2>
+
+    <div class="contact-inner reveal">
+      <p class="contact-desc">Napisz do mnie — odpiszę w ciągu 24 godzin. Opowiedz mi o swojej firmie i czego potrzebujesz.</p>
+      <a href="mailto:karolgoszczynski.kontakt@gmail.com" class="contact-email">
+        karolgoszczynski.kontakt@gmail.com
+        <span class="arrow">→</span>
+      </a>
+      <br>
+      <a href="#kontakt" class="btn-primary" style="margin-top: 1rem;">
+        Napisz teraz
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">Karol Goszczyński</div>
+  <div class="footer-copy">© 2025 · Strony internetowe · Polska</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor() {
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '16px'; cursor.style.height = '16px';
+      ring.style.width = '50px'; ring.style.height = '50px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '10px'; cursor.style.height = '10px';
+      ring.style.width = '36px'; ring.style.height = '36px';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), 60 * (Array.from(reveals).indexOf(e.target) % 4));
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Floating cards parallax
+  document.addEventListener('mousemove', e => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    document.querySelectorAll('.about-card').forEach((c, i) => {
+      const factor = (i + 1) * 0.4;
+      c.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+    });
+  });
+</script>
+</body>
+</html>
